@@ -3,6 +3,7 @@ class chessEngine:
 	def __init__(self):
 		self.board = [["e" for j in range(8)] for i in range(8)]
 		self.pieces = dict()
+		self.turn_white = True
 
 	def load_images(self):
 		self.pieces["R"] = pygame.image.load("pieces/Chess_rlt60.png").convert_alpha()
@@ -42,4 +43,14 @@ class chessEngine:
 
 	def get_piece_from_position(self, position):
 		return self.board[position[0]][position[1]]
+
+	def capture_piece(self, index, new_index):
+		self.board[new_index[0]][new_index[1]] = self.board[index[0]][index[1]]
+		self.board[index[0]][index[1]] = "e"
+
+	def change_turn(self):
+		self.turn_white = not self.turn_white
+
+	def get_turn(self):
+		return self.turn_white
 

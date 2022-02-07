@@ -73,21 +73,33 @@ def highlight_piece(board, index):
         pygame.draw.rect(board, HIGHLIGHT_COLORS[(index[0] + index[1]) % 2], 
         pygame.Rect(index[1] * SQUARE_SIZE, index[0] * SQUARE_SIZE, SQUARE_SIZE, SQUARE_SIZE))
 
+def is_oppisite_color(letter, landonletter):
+    if letter.islower():
+        return letter.islower() == landonletter.isupper()
+    elif letter.isupper():
+        return letter.isupper() == landonletter.islower()
 
 def main():
 
     index = None
     clicked = False
     previous_index = None
+
     while True:
 
         for event in pygame.event.get():
             if event.type == pygame.MOUSEBUTTONDOWN:
+
                 pos = pygame.mouse.get_pos()
                 index, piece = piece_click(board, pos)
+
                 if previous_index != index:
                     clicked = True
+                    if previous_index != None:
+                        engine.capture_piece(previous_index, index)
+
                     previous_index = index
+                    
                 else:
                     previous_index = None
                     clicked = False
@@ -99,7 +111,9 @@ def main():
         draw_chess_board(board)
         if clicked == True:
             highlight_piece(board, index)
+
         render_pieces(board)
+
         pygame.display.update()
         clock.tick(GAME_FPS)
 
