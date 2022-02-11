@@ -21,6 +21,9 @@ class chessEngine:
 		self.pieces["Q"] = pygame.image.load("pieces/Chess_qlt60.png").convert_alpha()
 		self.pieces["q"] = pygame.image.load("pieces/Chess_qdt60.png").convert_alpha()
 
+	def is_piece(self, index):
+		return not self.board[index[0]][index[1]] == "e"
+
 	def get_piece(self, piece):
 		return self.pieces[piece]
 

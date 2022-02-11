@@ -95,9 +95,13 @@ def main():
 
                 if previous_index != index:
                     clicked = True
-                    if previous_index != None:
-                        engine.capture_piece(previous_index, index)
 
+                    if previous_index != None and engine.is_piece(previous_index):
+                            if is_oppisite_color(engine.get_piece_from_position(previous_index), engine.get_piece_from_position(index)) or not engine.is_piece(index):                        
+                                engine.capture_piece(previous_index, index)
+                                clicked = False
+                                previous_index, index = None, None
+                                engine.change_turn()
                     previous_index = index
                     
                 else:
@@ -107,7 +111,6 @@ def main():
             if event.type == QUIT:
                 pygame.quit()
                 sys.exit()
-
         draw_chess_board(board)
         if clicked == True:
             highlight_piece(board, index)
