@@ -1,9 +1,12 @@
 import pygame
+import piece
+
 class chessEngine:
 	def __init__(self):
 		self.board = [["e" for j in range(8)] for i in range(8)]
 		self.pieces = dict()
 		self.turn_white = True
+		self.piece_engine = piece.pieceEngine()
 
 	def load_images(self):
 		self.pieces["R"] = pygame.image.load("pieces/Chess_rlt60.png").convert_alpha()
@@ -56,4 +59,21 @@ class chessEngine:
 
 	def is_white_turn(self):
 		return self.turn_white
+
+	def get_valid_moves(self, index):
+		piece = self.get_piece_from_position(index)
+		piece = piece.lower()
+		if piece == "r":
+			return self.piece_engine.get_rook_moves(self.board, index)
+		if piece == "n":
+			return self.piece_engine.get_knight_moves(self.board, index)
+		if piece == "p":
+			return self.piece_engine.get_pawn_moves(self.board, index)
+		if piece == "b":
+			return self.piece_engine.get_bishop_moves(self.board, index)
+		if piece == "q":
+			return self.piece_engine.get_queen_moves(self.board, index)
+		if piece == "k":
+			return self.piece_engine.get_king_moves(self.board, index)
+
 

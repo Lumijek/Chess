@@ -94,6 +94,7 @@ def main():
     index = None
     clicked = False
     previous_index = None
+    allowed_index = []
 
     while True:
 
@@ -104,15 +105,15 @@ def main():
                 index, piece = piece_click(board, pos)
 
                 if previous_index != index: # Makes sure player didn't click on same square again
-
                     if clicked == False:
                         if not right_player(index):
                             continue
+                    allowed_index = engine.get_valid_moves(index)
 
                     if previous_index != None and engine.is_piece(previous_index):
                         previous_piece = engine.get_piece_from_position(previous_index)
                         current_piece = engine.get_piece_from_position(index)
-                        if is_oppisite_color(previous_piece, current_piece) or not engine.is_piece(index):                    
+                        if (is_oppisite_color(previous_piece, current_piece) or not engine.is_piece(index)):
                             engine.capture_piece(previous_index, index)
                             clicked = False
                             previous_index, index = None, None
@@ -130,10 +131,12 @@ def main():
             if event.type == QUIT:
                 pygame.quit()
                 sys.exit()
+
         draw_chess_board(board)
         if clicked == True:
             highlight_piece(board, index)
-
+            for t in allowed_index:
+                highlight_piece(board, t)
         render_pieces(board)
 
         pygame.display.update()
