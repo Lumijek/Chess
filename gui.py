@@ -79,6 +79,16 @@ def is_oppisite_color(letter, landonletter):
     elif letter.isupper():
         return letter.isupper() == landonletter.islower()
 
+def right_player(index):
+    if not engine.is_piece(index):
+        return False
+    white_turn = engine.is_white_turn()
+    if white_turn and not engine.get_piece_from_position(index).isupper():
+        return False
+    if not white_turn and not engine.get_piece_from_position(index).islower():
+        return False
+    return True
+
 def main():
 
     index = None
@@ -93,18 +103,27 @@ def main():
                 pos = pygame.mouse.get_pos()
                 index, piece = piece_click(board, pos)
 
-                if previous_index != index:
-                    clicked = True
+                if previous_index != index: # Makes sure player didn't click on same square again
+
+                    if clicked == False:
+                        if not right_player(index):
+                            continue
 
                     if previous_index != None and engine.is_piece(previous_index):
-                            if is_oppisite_color(engine.get_piece_from_position(previous_index), engine.get_piece_from_position(index)) or not engine.is_piece(index):                        
-                                engine.capture_piece(previous_index, index)
-                                clicked = False
-                                previous_index, index = None, None
-                                engine.change_turn()
+                        previous_piece = engine.get_piece_from_position(previous_index)
+                        current_piece = engine.get_piece_from_position(index)
+                        if is_oppisite_color(previous_piece, current_piece) or not engine.is_piece(index):                    
+                            engine.capture_piece(previous_index, index)
+                            clicked = False
+                            previous_index, index = None, None
+                            engine.change_turn()
+
+                    else:
+                        clicked = True
+
                     previous_index = index
                     
-                else:
+                else: # if they did click on same square deselect it and continue
                     previous_index = None
                     clicked = False
 

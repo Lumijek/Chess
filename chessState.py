@@ -54,6 +54,6 @@ class chessEngine:
 	def change_turn(self):
 		self.turn_white = not self.turn_white
 
-	def get_turn(self):
+	def is_white_turn(self):
 		return self.turn_white
 
