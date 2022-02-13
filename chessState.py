@@ -75,5 +75,6 @@ class chessEngine:
 			return self.piece_engine.get_queen_moves(self.board, index)
 		if piece == "k":
 			return self.piece_engine.get_king_moves(self.board, index)
+		return []
 
 

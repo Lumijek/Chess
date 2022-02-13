@@ -97,6 +97,7 @@ def main():
     allowed_index = []
 
     while True:
+        draw_chess_board(board)
 
         for event in pygame.event.get():
             if event.type == pygame.MOUSEBUTTONDOWN:
@@ -113,6 +114,7 @@ def main():
                     if previous_index != None and engine.is_piece(previous_index):
                         previous_piece = engine.get_piece_from_position(previous_index)
                         current_piece = engine.get_piece_from_position(index)
+
                         if (is_oppisite_color(previous_piece, current_piece) or not engine.is_piece(index)):
                             engine.capture_piece(previous_index, index)
                             clicked = False
@@ -132,11 +134,10 @@ def main():
                 pygame.quit()
                 sys.exit()
 
-        draw_chess_board(board)
         if clicked == True:
             highlight_piece(board, index)
-            for t in allowed_index:
-                highlight_piece(board, t)
+            for ind in allowed_index:
+                highlight_piece(board, ind)
         render_pieces(board)
 
         pygame.display.update()
