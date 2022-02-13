@@ -1,8 +1,9 @@
-import pygame
 import sys
-import chessState
 
+import pygame
 from pygame.locals import *
+
+import chessState
 
 clock = pygame.time.Clock()
 
@@ -26,7 +27,7 @@ engine.load_images()
 engine.create_board(INITIAL_FEN)
 engine.scale_images(SQUARE_SIZE)
 
-font = pygame.font.SysFont('Arial', 11)
+font = pygame.font.SysFont("Arial", 11)
 
 pygame.display.set_caption("Chess")
 
@@ -40,13 +41,16 @@ GAME_FPS = 15
 
 
 def draw_chess_board(board):
-    letter_position = 'abcdefgh'
+    letter_position = "abcdefgh"
     number_position = [str(i) for i in range(1, 9)]
 
     for i in range(DIM):
         for j in range(DIM):
-            pygame.draw.rect(board, GAME_COLORS[(i + j) % 2], pygame.Rect(
-                i * SQUARE_SIZE, j * SQUARE_SIZE, SQUARE_SIZE, SQUARE_SIZE))
+            pygame.draw.rect(
+                board,
+                GAME_COLORS[(i + j) % 2],
+                pygame.Rect(i * SQUARE_SIZE, j * SQUARE_SIZE, SQUARE_SIZE, SQUARE_SIZE),
+            )
     for i in range(8):
         number_color = GAME_COLORS_MAP[i % 2]
         letter_color = GAME_COLORS[i % 2]
@@ -57,12 +61,16 @@ def draw_chess_board(board):
         letter = font.render(letter_position[i], True, letter_color)
         board.blit(letter, ((i + 1) * SQUARE_SIZE - 12, 8 * SQUARE_SIZE - 15))
 
+
 def render_pieces(board):
     surface = engine.get_board()
     for i in range(len(surface)):
         for j in range(len(surface)):
             if surface[i][j] != "e":
-                board.blit(engine.get_piece(surface[i][j]), (j * SQUARE_SIZE, i * SQUARE_SIZE))
+                board.blit(
+                    engine.get_piece(surface[i][j]), (j * SQUARE_SIZE, i * SQUARE_SIZE)
+                )
+
 
 def piece_click(board, coordinates):
     index = (coordinates[1] // SQUARE_SIZE, coordinates[0] // SQUARE_SIZE)
@@ -71,14 +79,21 @@ def piece_click(board, coordinates):
 
 
 def highlight_piece(board, index):
-        pygame.draw.rect(board, HIGHLIGHT_COLORS[(index[0] + index[1]) % 2], 
-        pygame.Rect(index[1] * SQUARE_SIZE, index[0] * SQUARE_SIZE, SQUARE_SIZE, SQUARE_SIZE))
+    pygame.draw.rect(
+        board,
+        HIGHLIGHT_COLORS[(index[0] + index[1]) % 2],
+        pygame.Rect(
+            index[1] * SQUARE_SIZE, index[0] * SQUARE_SIZE, SQUARE_SIZE, SQUARE_SIZE
+        ),
+    )
+
 
 def is_oppisite_color(letter, landonletter):
     if letter.islower():
         return letter.islower() == landonletter.isupper()
     elif letter.isupper():
         return letter.isupper() == landonletter.islower()
+
 
 def right_player(index):
     if not engine.is_piece(index):
@@ -89,6 +104,7 @@ def right_player(index):
     if not white_turn and not engine.get_piece_from_position(index).islower():
         return False
     return True
+
 
 def main():
 
@@ -106,7 +122,9 @@ def main():
                 pos = pygame.mouse.get_pos()
                 index, piece = piece_click(board, pos)
 
-                if previous_index != index: # Makes sure player didn't click on same square again
+                if (
+                    previous_index != index
+                ):  # Makes sure player didn't click on same square again
                     if clicked == False:
                         if not right_player(index):
                             continue
@@ -116,11 +134,13 @@ def main():
                         allowed_index = engine.get_valid_moves(previous_index)
                         previous_piece = engine.get_piece_from_position(previous_index)
                         current_piece = engine.get_piece_from_position(index)
-                        if (is_oppisite_color(previous_piece, current_piece) or not engine.is_piece(index)):
-                            if index not in allowed_index:   
+                        if is_oppisite_color(
+                            previous_piece, current_piece
+                        ) or not engine.is_piece(index):
+                            if index not in allowed_index:
                                 clicked = False
                                 previous_index, index = None, None
-                                continue                          
+                                continue
                             engine.capture_piece(previous_index, index)
                             clicked = False
                             previous_index, index = None, None
@@ -130,8 +150,8 @@ def main():
                         clicked = True
 
                     previous_index = index
-                    
-                else: # if they did click on same square deselect it and continue
+
+                else:  # if they did click on same square deselect it and continue
                     previous_index = None
                     clicked = False
 
@@ -147,6 +167,7 @@ def main():
 
         pygame.display.update()
         clock.tick(GAME_FPS)
+
 
 if __name__ == "__main__":
     main()
