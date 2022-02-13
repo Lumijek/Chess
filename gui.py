@@ -8,9 +8,13 @@ clock = pygame.time.Clock()
 
 pygame.init()
 
-WIDTH = 512
+WIDTH = 712
 
-HEIGHT = 512
+HEIGHT = 712
+
+DIM = 8
+
+SQUARE_SIZE = WIDTH // DIM
 
 WINDOW_SIZE = (WIDTH, HEIGHT)
 
@@ -20,6 +24,7 @@ INITIAL_FEN = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR"
 engine = chessState.chessEngine()
 engine.load_images()
 engine.create_board(INITIAL_FEN)
+engine.scale_images(SQUARE_SIZE)
 
 font = pygame.font.SysFont('Arial', 11)
 
@@ -30,10 +35,6 @@ GAME_COLORS = ((150, 200, 100), (200, 205, 200))
 GAME_COLORS_MAP = (GAME_COLORS[1], GAME_COLORS[0])
 
 HIGHLIGHT_COLORS = [(140, 255, 90), (255, 255, 255)]
-
-DIM = 8
-
-SQUARE_SIZE = WIDTH // DIM
 
 GAME_FPS = 15
 
@@ -109,13 +110,17 @@ def main():
                     if clicked == False:
                         if not right_player(index):
                             continue
-                    allowed_index = engine.get_valid_moves(index)
+                    allowed_index_highlight = engine.get_valid_moves(index)
 
                     if previous_index != None and engine.is_piece(previous_index):
+                        allowed_index = engine.get_valid_moves(previous_index)
                         previous_piece = engine.get_piece_from_position(previous_index)
                         current_piece = engine.get_piece_from_position(index)
-
                         if (is_oppisite_color(previous_piece, current_piece) or not engine.is_piece(index)):
+                            if index not in allowed_index:   
+                                clicked = False
+                                previous_index, index = None, None
+                                continue                          
                             engine.capture_piece(previous_index, index)
                             clicked = False
                             previous_index, index = None, None
@@ -136,7 +141,7 @@ def main():
 
         if clicked == True:
             highlight_piece(board, index)
-            for ind in allowed_index:
+            for ind in allowed_index_highlight:
                 highlight_piece(board, ind)
         render_pieces(board)
 

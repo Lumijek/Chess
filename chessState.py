@@ -24,6 +24,10 @@ class chessEngine:
 		self.pieces["Q"] = pygame.image.load("pieces/Chess_qlt60.png").convert_alpha()
 		self.pieces["q"] = pygame.image.load("pieces/Chess_qdt60.png").convert_alpha()
 
+	def scale_images(self, square_size):
+		for piece in self.pieces:
+			self.pieces[piece] = pygame.transform.smoothscale(self.pieces[piece], (square_size, square_size))
+			
 	def is_piece(self, index):
 		return not self.board[index[0]][index[1]] == "e"
 
