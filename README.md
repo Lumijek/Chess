@@ -1,2 +1,5 @@
 # Chess
-First attempt at learning Pygame
+Basic implementation of Chess
+
+//TODO
+-  Add an AI... somehow
