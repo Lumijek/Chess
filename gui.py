@@ -1,5 +1,5 @@
 import sys
-
+from copy import deepcopy
 import pygame
 from pygame.locals import *
 
@@ -26,7 +26,6 @@ engine = chessState.chessEngine()
 engine.load_images()
 engine.create_board(INITIAL_FEN)
 engine.scale_images(SQUARE_SIZE)
-
 font = pygame.font.SysFont("Arial", 11)
 
 pygame.display.set_caption("Chess")
@@ -125,13 +124,15 @@ def main():
                 if (
                     previous_index != index
                 ):  # Makes sure player didn't click on same square again
-                    if clicked == False:
+                    if not clicked:
                         if not right_player(index):
                             continue
-                    allowed_index_highlight = engine.get_valid_moves(index)
 
-                    if previous_index != None and engine.is_piece(previous_index):
+                    allowed_index_highlight = engine.get_valid_moves(index)
+                    allowed_index_highlight = engine.emulate_move_capture(index, allowed_index_highlight)
+                    if previous_index is not None and engine.is_piece(previous_index):
                         allowed_index = engine.get_valid_moves(previous_index)
+                        allowed_index = engine.emulate_move_capture(index, allowed_index)
                         previous_piece = engine.get_piece_from_position(previous_index)
                         current_piece = engine.get_piece_from_position(index)
                         if is_oppisite_color(
@@ -159,7 +160,7 @@ def main():
                 pygame.quit()
                 sys.exit()
 
-        if clicked == True:
+        if clicked:
             highlight_piece(board, index)
             for ind in allowed_index_highlight:
                 highlight_piece(board, ind)

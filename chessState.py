@@ -1,7 +1,15 @@
 import pygame
-
+import time
+from copy import deepcopy
+from pprint import pprint
 import piece
 
+
+def is_oppisite_color(letter, landonletter):
+    if letter.islower():
+        return letter.islower() == landonletter.isupper()
+    elif letter.isupper():
+        return letter.isupper() == landonletter.islower()
 
 class chessEngine:
     def __init__(self):
@@ -27,9 +35,9 @@ class chessEngine:
         self.pieces["q"] = pygame.image.load("pieces/Chess_qdt60.png").convert_alpha()
 
     def scale_images(self, square_size):
-        for piece in self.pieces:
-            self.pieces[piece] = pygame.transform.smoothscale(
-                self.pieces[piece], (square_size, square_size)
+        for p in self.pieces:
+            self.pieces[p] = pygame.transform.smoothscale(
+                self.pieces[p], (square_size, square_size)
             )
 
     def is_piece(self, index):
@@ -85,5 +93,34 @@ class chessEngine:
             return self.piece_engine.get_king_moves(self.board, index)
         return []
 
-    def king_in_danger(index):
-        pass
+    def king_in_danger(self, index):
+        all_opponent_indexes = []
+        piece = self.get_piece_from_position(index)
+        for i in range(len(self.board)):
+            for j in range(len(self.board[i])):
+                current_piece = self.get_piece_from_position((i, j))
+                if is_oppisite_color(piece, current_piece):
+                    all_opponent_indexes += self.get_valid_moves((i, j))
+        if piece.isupper():
+            king = "K"
+        else:
+            king = "k"
+        for index in all_opponent_indexes:
+            if self.get_piece_from_position(index) == king:
+                return True
+        return False
+    def emulate_move_capture(self, index, allowed_indexes):
+        i, j = index
+        return_index = []
+        for ind in allowed_indexes:
+            prev_piece = self.board[i][j]
+            piece = self.board[ind[0]][ind[1]]
+            self.board[ind[0]][ind[1]] = prev_piece
+            self.board[i][j] = "e"
+            if not self.king_in_danger(ind):
+                return_index.append(ind)
+            self.board[i][j] = prev_piece
+            self.board[ind[0]][ind[1]] = piece
+        return return_index
+
+
