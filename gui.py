@@ -1,5 +1,6 @@
 import sys
 from copy import deepcopy
+
 import pygame
 from pygame.locals import *
 
@@ -129,10 +130,14 @@ def main():
                             continue
 
                     allowed_index_highlight = engine.get_valid_moves(index)
-                    allowed_index_highlight = engine.emulate_move_capture(index, allowed_index_highlight)
+                    allowed_index_highlight = engine.emulate_move_capture(
+                        index, allowed_index_highlight, n="first"
+                    )
                     if previous_index is not None and engine.is_piece(previous_index):
                         allowed_index = engine.get_valid_moves(previous_index)
-                        allowed_index = engine.emulate_move_capture(index, allowed_index)
+                        allowed_index = engine.emulate_move_capture(
+                            previous_index, allowed_index, "second"
+                        )
                         previous_piece = engine.get_piece_from_position(previous_index)
                         current_piece = engine.get_piece_from_position(index)
                         if is_oppisite_color(

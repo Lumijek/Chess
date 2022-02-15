@@ -1,7 +1,5 @@
 import pygame
-import time
-from copy import deepcopy
-from pprint import pprint
+
 import piece
 
 
@@ -10,6 +8,7 @@ def is_oppisite_color(letter, landonletter):
         return letter.islower() == landonletter.isupper()
     elif letter.isupper():
         return letter.isupper() == landonletter.islower()
+
 
 class chessEngine:
     def __init__(self):
@@ -109,7 +108,8 @@ class chessEngine:
             if self.get_piece_from_position(index) == king:
                 return True
         return False
-    def emulate_move_capture(self, index, allowed_indexes):
+
+    def emulate_move_capture(self, index, allowed_indexes, n):
         i, j = index
         return_index = []
         for ind in allowed_indexes:
@@ -122,5 +122,3 @@ class chessEngine:
             self.board[i][j] = prev_piece
             self.board[ind[0]][ind[1]] = piece
         return return_index
-
-
