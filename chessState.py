@@ -130,9 +130,7 @@ class chessEngine:
                 for j in range(len(self.board[i])):
                     if self.board[i][j].isupper() and self.is_piece((i, j)):
                         valid_index = self.get_valid_moves((i, j))
-                        valid_index = self.emulate_move_capture(
-                            (i, j), valid_index
-                        )
+                        valid_index = self.emulate_move_capture((i, j), valid_index)
                         all_valid_index += valid_index
             if not all_valid_index:
                 return "Black Wins"
@@ -142,14 +140,9 @@ class chessEngine:
                 for j in range(len(self.board[i])):
                     if self.board[i][j].islower() and self.is_piece((i, j)):
                         valid_index = self.get_valid_moves((i, j))
-                        valid_index = self.emulate_move_capture(
-                            (i, j), valid_index
-                        )
+                        valid_index = self.emulate_move_capture((i, j), valid_index)
                         all_valid_index += valid_index
             if not all_valid_index:
                 return "White Wins"
 
         return "Play"
-
-
-
