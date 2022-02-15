@@ -9,9 +9,9 @@ clock = pygame.time.Clock()
 
 pygame.init()
 
-WIDTH = 712
+WIDTH = 608
 
-HEIGHT = 712
+HEIGHT = 608
 
 DIM = 8
 
@@ -21,7 +21,8 @@ WINDOW_SIZE = (WIDTH, HEIGHT)
 
 board = pygame.display.set_mode(WINDOW_SIZE)
 
-INITIAL_FEN = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR"
+INITIAL_FEN = "rnbqkbnr/1p6/8/8/8/8/PPPPPPPP/RNBQKBNR"
+INITIAL_FEN = "k7/1R1RN3/p3p3/P3P2p/1PP4P/3K1PP1/8/8"
 engine = chessState.chessEngine()
 engine.load_images()
 engine.create_board(INITIAL_FEN)

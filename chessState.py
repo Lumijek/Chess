@@ -53,7 +53,7 @@ class chessEngine:
             j = 0
             while j < row_length:
                 if row[j].isdigit():
-                    j += int(row[j]) - 1
+                    j += int(row[j])
                     continue
                 else:
                     self.board[i][j] = row[j]
