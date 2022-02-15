@@ -109,7 +109,7 @@ class chessEngine:
                 return True
         return False
 
-    def emulate_move_capture(self, index, allowed_indexes, n):
+    def emulate_move_capture(self, index, allowed_indexes):
         i, j = index
         return_index = []
         for ind in allowed_indexes:
@@ -122,3 +122,34 @@ class chessEngine:
             self.board[i][j] = prev_piece
             self.board[ind[0]][ind[1]] = piece
         return return_index
+
+    def checkmate(self):
+        if self.turn_white:
+            all_valid_index = []
+            for i in range(len(self.board)):
+                for j in range(len(self.board[i])):
+                    if self.board[i][j].isupper() and self.is_piece((i, j)):
+                        valid_index = self.get_valid_moves((i, j))
+                        valid_index = self.emulate_move_capture(
+                            (i, j), valid_index
+                        )
+                        all_valid_index += valid_index
+            if not all_valid_index:
+                return "Black Wins"
+        elif not self.turn_white:
+            all_valid_index = []
+            for i in range(len(self.board)):
+                for j in range(len(self.board[i])):
+                    if self.board[i][j].islower() and self.is_piece((i, j)):
+                        valid_index = self.get_valid_moves((i, j))
+                        valid_index = self.emulate_move_capture(
+                            (i, j), valid_index
+                        )
+                        all_valid_index += valid_index
+            if not all_valid_index:
+                return "White Wins"
+
+        return "Play"
+
+
+
