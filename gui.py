@@ -22,7 +22,6 @@ WINDOW_SIZE = (WIDTH, HEIGHT)
 board = pygame.display.set_mode(WINDOW_SIZE)
 
 INITIAL_FEN = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR"
-INITIAL_FEN = "k7/5Q/8/8/8/8/8/8"
 engine = chessState.chessEngine()
 engine.load_images()
 engine.create_board(INITIAL_FEN)
@@ -114,6 +113,11 @@ def main():
     allowed_index = []
 
     while True:
+        check_mate = engine.checkmate()
+        if check_mate != "Play":
+            print(check_mate)
+            pygame.quit()
+            sys.exit()
         draw_chess_board(board)
 
         for event in pygame.event.get():
@@ -149,11 +153,11 @@ def main():
                                 continue
                             engine.capture_piece(previous_index, index)
                             clicked = False
+                            if engine.pawn_reach_end(index):
+                                print("Pawn is god")
+
                             previous_index, index = None, None
                             engine.change_turn()
-                            check_mate = engine.checkmate()
-                            if check_mate != "Play":
-                                print(check_mate)
 
                     else:
                         clicked = True

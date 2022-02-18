@@ -47,7 +47,6 @@ class chessEngine:
 
     def create_board(self, fen):
         fen = fen.split("/")
-        print(fen)
         for i in range(len(self.board)):
             a = 0
             for char in fen[i]:
@@ -56,7 +55,6 @@ class chessEngine:
                     a += 1
                 else:
                     a += int(char)
-        pprint.pprint(self.board)
 
     def get_board(self):
         return self.board
@@ -114,6 +112,16 @@ class chessEngine:
         for index in all_opponent_indexes:
             if self.get_piece_from_position(index) == king:
                 return True
+        return False
+
+    def pawn_reach_end(self, index):
+        piece = self.get_piece_from_position(index)
+
+        if piece == "P" and index[0] == 0:
+            return True
+        if piece == "p" and index[0] == 7:
+            return True
+
         return False
 
     def emulate_move_capture(self, index, allowed_indexes):
