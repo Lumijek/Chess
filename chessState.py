@@ -47,17 +47,16 @@ class chessEngine:
 
     def create_board(self, fen):
         fen = fen.split("/")
+        print(fen)
         for i in range(len(self.board)):
-            row = fen[i]
-            row_length = len(row)
-            j = 0
-            while j < row_length:
-                if row[j].isdigit():
-                    j += int(row[j])
-                    continue
+            a = 0
+            for char in fen[i]:
+                if not char.isdigit():
+                    self.board[i][a] = char
+                    a += 1
                 else:
-                    self.board[i][j] = row[j]
-                    j += 1
+                    a += int(char)
+        pprint.pprint(self.board)
 
     def get_board(self):
         return self.board
@@ -74,6 +73,14 @@ class chessEngine:
 
     def is_white_turn(self):
         return self.turn_white
+
+    def get_piece_index(self, piece):
+        for i in range(len(self.board)):
+            for j in range(len(self.board[i])):
+                if self.board[i][j] == piece:
+                    return (i, j)
+
+        return (0, 0)
 
     def get_valid_moves(self, index):
         piece = self.get_piece_from_position(index)
@@ -132,8 +139,12 @@ class chessEngine:
                         valid_index = self.get_valid_moves((i, j))
                         valid_index = self.emulate_move_capture((i, j), valid_index)
                         all_valid_index += valid_index
-            if not all_valid_index:
+            if self.king_in_danger(self.get_piece_index("K")) and (not all_valid_index):
                 return "Black Wins"
+            elif not self.king_in_danger(self.get_piece_index("K")) and (
+                not all_valid_index
+            ):
+                return "Stalemate"
         elif not self.turn_white:
             all_valid_index = []
             for i in range(len(self.board)):
@@ -142,7 +153,11 @@ class chessEngine:
                         valid_index = self.get_valid_moves((i, j))
                         valid_index = self.emulate_move_capture((i, j), valid_index)
                         all_valid_index += valid_index
-            if not all_valid_index:
+            if self.king_in_danger(self.get_piece_index("k")) and (not all_valid_index):
                 return "White Wins"
+            elif not self.king_in_danger(self.get_piece_index("k")) and (
+                not all_valid_index
+            ):
+                return "Stalemate"
 
         return "Play"
