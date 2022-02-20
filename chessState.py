@@ -64,7 +64,9 @@ class chessEngine:
 
     def capture_piece(self, index, new_index):
         pi = self.get_piece_from_position(index)
-        if pi == "K" and abs(index[1] - new_index[1]) > 1: # Checking for white King castle
+        if (
+            pi == "K" and abs(index[1] - new_index[1]) > 1
+        ):  # Checking for white King castle
             if index == (7, 4):
                 if new_index == (7, 2):
                     self.board[7][0] = "e"
@@ -77,7 +79,9 @@ class chessEngine:
                     self.board[7][6] = "K"
                     self.board[7][7] = "e"
             return
-        elif pi == "k" and abs(index[1] - new_index[1]) > 1: # Checking for black King castle
+        elif (
+            pi == "k" and abs(index[1] - new_index[1]) > 1
+        ):  # Checking for black King castle
             if index == (0, 4):
                 if new_index == (0, 2):
                     self.board[0][0] = "e"
@@ -138,7 +142,9 @@ class chessEngine:
         if piece == "q":
             return self.piece_engine.get_queen_moves(self.board, index)
         if piece == "k":
-            return self.piece_engine.get_king_moves(self.board, index) + self.castle(index)
+            return self.piece_engine.get_king_moves(self.board, index) + self.castle(
+                index
+            )
         return []
 
     def king_in_danger(self, index):
@@ -164,23 +170,31 @@ class chessEngine:
         if piece.isupper():
             if self.white_castle[:2] == [True, True]:
                 rook_left_moves = self.piece_engine.get_rook_moves(self.board, (7, 0))
-                if ((7, 1) in rook_left_moves and (7, 2) in rook_left_moves and (7, 3) in rook_left_moves):
+                if (
+                    (7, 1) in rook_left_moves
+                    and (7, 2) in rook_left_moves
+                    and (7, 3) in rook_left_moves
+                ):
                     if not self.king_in_danger(index):
                         ind.append((7, 2))
             if self.white_castle[1:] == [True, True]:
                 rook_left_moves = self.piece_engine.get_rook_moves(self.board, (7, 7))
-                if ((7, 6) in rook_left_moves and (7, 5) in rook_left_moves):
+                if (7, 6) in rook_left_moves and (7, 5) in rook_left_moves:
                     if not self.king_in_danger(index):
                         ind.append((7, 6))
         else:
             if self.black_castle[:2] == [True, True]:
                 rook_left_moves = self.piece_engine.get_rook_moves(self.board, (0, 0))
-                if ((0, 1) in rook_left_moves and (0, 2) in rook_left_moves and (0, 3) in rook_left_moves):
+                if (
+                    (0, 1) in rook_left_moves
+                    and (0, 2) in rook_left_moves
+                    and (0, 3) in rook_left_moves
+                ):
                     if not self.king_in_danger(index):
                         ind.append((0, 2))
             if self.black_castle[1:] == [True, True]:
                 rook_left_moves = self.piece_engine.get_rook_moves(self.board, (0, 7))
-                if ((0, 6) in rook_left_moves and (0, 5) in rook_left_moves):
+                if (0, 6) in rook_left_moves and (0, 5) in rook_left_moves:
                     if not self.king_in_danger(index):
                         ind.append((0, 6))
         return ind
