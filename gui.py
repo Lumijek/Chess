@@ -113,11 +113,6 @@ def main():
     allowed_index = []
 
     while True:
-        check_mate = engine.checkmate()
-        if check_mate != "Play":
-            print(check_mate)
-            pygame.quit()
-            sys.exit()
         draw_chess_board(board)
 
         for event in pygame.event.get():
@@ -158,6 +153,11 @@ def main():
 
                             previous_index, index = None, None
                             engine.change_turn()
+                            check_mate = engine.checkmate()
+                            if check_mate != "Play":
+                                print(check_mate)
+                                pygame.quit()
+                                sys.exit()
 
                     else:
                         clicked = True
@@ -177,7 +177,6 @@ def main():
             for ind in allowed_index_highlight:
                 highlight_piece(board, ind)
         render_pieces(board)
-
         pygame.display.update()
         clock.tick(GAME_FPS)
 

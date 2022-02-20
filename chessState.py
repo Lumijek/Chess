@@ -16,14 +16,14 @@ class chessEngine:
         self.pieces = dict()
         self.turn_white = True
         self.piece_engine = piece.pieceEngine()
+        self.white_castle = [True, True, True]
+        self.black_castle = [True, True, True]
 
     def load_images(self):
         self.pieces["R"] = pygame.image.load("pieces/Chess_rlt60.png").convert_alpha()
         self.pieces["r"] = pygame.image.load("pieces/Chess_rdt60.png").convert_alpha()
         self.pieces["B"] = pygame.image.load("pieces/Chess_blt60.png").convert_alpha()
         self.pieces["b"] = pygame.image.load("pieces/Chess_bdt60.png").convert_alpha()
-        self.pieces["R"] = pygame.image.load("pieces/Chess_rlt60.png").convert_alpha()
-        self.pieces["r"] = pygame.image.load("pieces/Chess_rdt60.png").convert_alpha()
         self.pieces["N"] = pygame.image.load("pieces/Chess_nlt60.png").convert_alpha()
         self.pieces["n"] = pygame.image.load("pieces/Chess_ndt60.png").convert_alpha()
         self.pieces["P"] = pygame.image.load("pieces/Chess_plt60.png").convert_alpha()
@@ -63,8 +63,52 @@ class chessEngine:
         return self.board[position[0]][position[1]]
 
     def capture_piece(self, index, new_index):
+        pi = self.get_piece_from_position(index)
+        if pi == "K" and abs(index[1] - new_index[1]) > 1: # Checking for white King castle
+            if index == (7, 4):
+                if new_index == (7, 2):
+                    self.board[7][0] = "e"
+                    self.board[7][2] = "K"
+                    self.board[7][3] = "R"
+                    self.board[7][4] = "e"
+                elif new_index == (7, 6):
+                    self.board[7][4] = "e"
+                    self.board[7][5] = "R"
+                    self.board[7][6] = "K"
+                    self.board[7][7] = "e"
+            return
+        elif pi == "k" and abs(index[1] - new_index[1]) > 1: # Checking for black King castle
+            if index == (0, 4):
+                if new_index == (0, 2):
+                    self.board[0][0] = "e"
+                    self.board[0][2] = "k"
+                    self.board[0][3] = "r"
+                    self.board[0][4] = "e"
+                elif new_index == (0, 6):
+                    self.board[0][4] = "e"
+                    self.board[0][5] = "r"
+                    self.board[0][6] = "k"
+                    self.board[0][7] = "e"
+            return
+
         self.board[new_index[0]][new_index[1]] = self.board[index[0]][index[1]]
         self.board[index[0]][index[1]] = "e"
+        piece = self.get_piece_from_position(new_index)
+
+        if piece == "R":
+            if self.board[7][0] != "R":
+                self.white_castle[0] = False
+            elif self.board[7][7] != "R":
+                self.white_castle[2] = False
+        elif piece == "r":
+            if self.board[0][0] != "r":
+                self.black_castle[0] = False
+            elif self.board[0][7] != "r":
+                self.black_castle[2] = False
+        elif piece == "K":
+            self.white_castle[1] = False
+        elif piece == "k":
+            self.black_castle[1] = False
 
     def change_turn(self):
         self.turn_white = not self.turn_white
@@ -81,8 +125,8 @@ class chessEngine:
         return (0, 0)
 
     def get_valid_moves(self, index):
-        piece = self.get_piece_from_position(index)
-        piece = piece.lower()
+        p = self.get_piece_from_position(index)
+        piece = p.lower()
         if piece == "r":
             return self.piece_engine.get_rook_moves(self.board, index)
         if piece == "n":
@@ -94,7 +138,7 @@ class chessEngine:
         if piece == "q":
             return self.piece_engine.get_queen_moves(self.board, index)
         if piece == "k":
-            return self.piece_engine.get_king_moves(self.board, index)
+            return self.piece_engine.get_king_moves(self.board, index) + self.castle(index)
         return []
 
     def king_in_danger(self, index):
@@ -113,6 +157,33 @@ class chessEngine:
             if self.get_piece_from_position(index) == king:
                 return True
         return False
+
+    def castle(self, index):
+        ind = []
+        piece = self.get_piece_from_position(index)
+        if piece.isupper():
+            if self.white_castle[:2] == [True, True]:
+                rook_left_moves = self.piece_engine.get_rook_moves(self.board, (7, 0))
+                if ((7, 1) in rook_left_moves and (7, 2) in rook_left_moves and (7, 3) in rook_left_moves):
+                    if not self.king_in_danger(index):
+                        ind.append((7, 2))
+            if self.white_castle[1:] == [True, True]:
+                rook_left_moves = self.piece_engine.get_rook_moves(self.board, (7, 7))
+                if ((7, 6) in rook_left_moves and (7, 5) in rook_left_moves):
+                    if not self.king_in_danger(index):
+                        ind.append((7, 6))
+        else:
+            if self.black_castle[:2] == [True, True]:
+                rook_left_moves = self.piece_engine.get_rook_moves(self.board, (0, 0))
+                if ((0, 1) in rook_left_moves and (0, 2) in rook_left_moves and (0, 3) in rook_left_moves):
+                    if not self.king_in_danger(index):
+                        ind.append((0, 2))
+            if self.black_castle[1:] == [True, True]:
+                rook_left_moves = self.piece_engine.get_rook_moves(self.board, (0, 7))
+                if ((0, 6) in rook_left_moves and (0, 5) in rook_left_moves):
+                    if not self.king_in_danger(index):
+                        ind.append((0, 6))
+        return ind
 
     def pawn_reach_end(self, index):
         piece = self.get_piece_from_position(index)
